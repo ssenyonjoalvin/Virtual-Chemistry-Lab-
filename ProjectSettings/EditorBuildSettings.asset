@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Menu.unity
+    guid: 386c8acc6286a104ca58b7bbb3b9f5f3
+  - enabled: 1
+    path: Assets/3D Laboratory Environment with Appratus/Scenes/LaboratoryScene.unity
+    guid: 9fc0d4010bbf28b4594072e72b8655ab
+  m_configObjects:
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 1149c1008d8f2b052bcd4bf36dde1edf, type: 2}
+    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 2b122abc8d214ef339e2be6b136fc514, type: 2}
+  m_UseUCBPForAssetBundles: 0

@@ -8,6 +8,11 @@ TagManager:
   - Liquid
   - IndicatorLiquid
   - BaseSolution
+  - BaseSolutionCollider
+  - Interactable
+  - instructionPanel
+  - instructionText
+  - RightHand
   layers:
   - Default
   - TransparentFX

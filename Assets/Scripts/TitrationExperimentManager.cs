@@ -148,11 +148,11 @@ public class TitrationExperimentManager : MonoBehaviour
 
         if (obj != null)
         {
-            ObjectHighlighter highlighter = obj.GetComponent<ObjectHighlighter>();
-            if (highlighter != null)
-            {
-                highlighter.EnableHighlight();
-            }
+            // ObjectHighlighter highlighter = obj.GetComponent<ObjectHighlighter>();
+            // if (highlighter != null)
+            // {
+            //     highlighter.EnableHighlight();
+            // }
 
             if (arrow != null)
             {
@@ -163,15 +163,15 @@ public class TitrationExperimentManager : MonoBehaviour
 
     void RemoveHighlight()
     {
-        if (currentlyHighlightedObject != null)
-        {
-            ObjectHighlighter highlighter = currentlyHighlightedObject.GetComponent<ObjectHighlighter>();
-            if (highlighter != null)
-            {
-                highlighter.DisableHighlight();
-            }
-            currentlyHighlightedObject = null;
-        }
+        // if (currentlyHighlightedObject != null)
+        // {
+        //     ObjectHighlighter highlighter = currentlyHighlightedObject.GetComponent<ObjectHighlighter>();
+        //     if (highlighter != null)
+        //     {
+        //         highlighter.DisableHighlight();
+        //     }
+        //     currentlyHighlightedObject = null;
+        // }
 
         if (arrow != null)
         {

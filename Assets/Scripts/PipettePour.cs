@@ -30,7 +30,7 @@ public class PipettePour : MonoBehaviour
         if (experimentManager != null)
             experimentManager.OnPouringStarted();
 
-        Debug.Log("Started pouring");
+                Debug.Log("Started pouring");
     }
 
     public void StopPouring()

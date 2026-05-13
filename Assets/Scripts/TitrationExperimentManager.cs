@@ -3,6 +3,13 @@ using TMPro;
 
 public class TitrationExperimentManager : MonoBehaviour
 {
+    [System.Serializable]
+    public class StepVoiceLine
+    {
+        public int stepNumber;
+        public AudioClip clip;
+    }
+
     [Header("UI")]
     public GameObject startPanel;
     public TextMeshProUGUI instructionText;
@@ -20,8 +27,38 @@ public class TitrationExperimentManager : MonoBehaviour
     [Header("Helpers")]
     public FloatingArrow arrow;
 
+    [Header("Voice Guidance")]
+    public AudioSource voiceSource;
+    public bool playVoiceGuidance = true;
+    [Tooltip("Per-step clips assigned here take priority over Resources.")]
+    public StepVoiceLine[] stepVoiceLines;
+    [Tooltip("If no clip is assigned for a step, load from Resources: {folder}/step_{stepNumber} (e.g. step_1).")]
+    public bool loadNarrationFromResources = true;
+    public string resourcesNarrationFolder = "TitrationNarration";
+    [Range(0f, 1f)]
+    public float voiceVolume = 1f;
+
     private int currentStep = 0;
     private GameObject currentlyHighlightedObject;
+
+    void Awake()
+    {
+        EnsureVoiceSource();
+    }
+
+    void EnsureVoiceSource()
+    {
+        if (voiceSource != null)
+            return;
+
+        voiceSource = GetComponent<AudioSource>();
+        if (voiceSource == null)
+            voiceSource = gameObject.AddComponent<AudioSource>();
+
+        voiceSource.playOnAwake = false;
+        voiceSource.loop = false;
+        voiceSource.spatialBlend = 0f;
+    }
 
     public void StartExperiment()
     {
@@ -64,6 +101,8 @@ public class TitrationExperimentManager : MonoBehaviour
                 RemoveHighlight();
                 break;
         }
+
+        PlayVoiceForStep(currentStep);
     }
 
     // --- UI HELPER METHODS ---
@@ -131,6 +170,8 @@ public class TitrationExperimentManager : MonoBehaviour
 
         // 4. Remove any remaining highlights
         RemoveHighlight();
+
+        PlayVoiceForStep(currentStep);
     }
 
     private void NextStep()
@@ -177,5 +218,45 @@ public class TitrationExperimentManager : MonoBehaviour
         {
             arrow.Hide();
         }
+    }
+
+    void PlayVoiceForStep(int stepNumber)
+    {
+        if (!playVoiceGuidance)
+            return;
+
+        EnsureVoiceSource();
+        if (voiceSource == null)
+            return;
+
+        AudioClip clip = GetClipForStep(stepNumber);
+        if (clip == null)
+            return;
+
+        voiceSource.Stop();
+        voiceSource.volume = voiceVolume;
+        voiceSource.clip = clip;
+        voiceSource.Play();
+    }
+
+    AudioClip GetClipForStep(int stepNumber)
+    {
+        if (stepVoiceLines != null)
+        {
+            for (int i = 0; i < stepVoiceLines.Length; i++)
+            {
+                StepVoiceLine line = stepVoiceLines[i];
+                if (line != null && line.stepNumber == stepNumber && line.clip != null)
+                    return line.clip;
+            }
+        }
+
+        if (loadNarrationFromResources && !string.IsNullOrEmpty(resourcesNarrationFolder))
+        {
+            string path = $"{resourcesNarrationFolder}/step_{stepNumber}";
+            return Resources.Load<AudioClip>(path);
+        }
+
+        return null;
     }
 }

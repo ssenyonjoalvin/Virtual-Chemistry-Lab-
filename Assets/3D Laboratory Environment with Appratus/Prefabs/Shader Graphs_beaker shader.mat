@@ -38,15 +38,15 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Float: 0.05
+    - _Float: 0.04
     - _QueueControl: 0
     - _QueueOffset: 0
     - _RotX: 0
     - _RotZ: 0
     - _XRMotionVectorsPass: 1
     m_Colors:
-    - _Color: {r: 0.01321645, g: 0.254717, b: 0.01321645, a: 1}
-    - _Color_1: {r: 0.01837844, g: 0.5566038, b: 0.01837844, a: 1}
+    - _Color: {r: 0.8584906, g: 0.84634215, b: 0.84634215, a: 0}
+    - _Color_1: {r: 0.91224635, g: 0.9433962, b: 0.91224635, a: 0.21176471}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &8844197913350328634

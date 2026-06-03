@@ -13,8 +13,10 @@ public class TitrationExperimentManager : MonoBehaviour
     [Header("UI")]
     public GameObject startPanel;
     public TextMeshProUGUI instructionText;
+    public TextMeshProUGUI worldSpaceMonitorText; // New reference
 
     [Header("Objects")]
+
     public GameObject indicatorBottle;
     public GameObject dropper;
     public GameObject flask;

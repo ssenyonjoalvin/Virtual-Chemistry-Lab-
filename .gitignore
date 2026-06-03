@@ -17,3 +17,10 @@ UserSettings/
 # OS
 .DS_Store
 Thumbs.db
+
+#others
+.vs/
+*.csproj
+*.sln
+*.user
+*.unityproj

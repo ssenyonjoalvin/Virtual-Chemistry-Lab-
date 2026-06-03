@@ -7,6 +7,8 @@ public class VRFlowManager : MonoBehaviour
     public Transform cameraOffset; // Camera Offset
     public Transform spawnPoint;
 
+      public Transform explosivesArea;
+
     public GameObject menuCanvas;
 
     public TitrationExperimentManager experimentManager;
@@ -21,10 +23,28 @@ public class VRFlowManager : MonoBehaviour
 
     }
 
+     public void StartGotoExplosives()
+    {
+        // 1. Teleport player to the explosives area
+        TeleportToExplosives();
+
+        // 2. Hide menu after teleporting
+        menuCanvas.SetActive(false);
+
+    }
+
     void TeleportToLab()
     {
         // Move XR Origin so camera ends up at spawn point
         Vector3 offset = xrOrigin.position - cameraOffset.position;
         xrOrigin.position = spawnPoint.position + offset;
     }
+
+  void TeleportToExplosives()
+    {
+        // Move XR Origin so camera ends up at spawn point
+        Vector3 offset = xrOrigin.position - cameraOffset.position;
+        xrOrigin.position = explosivesArea.position + offset;
+    }
+
 }

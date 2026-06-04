@@ -1,3 +1,4 @@
+//Assets/Scripts/VRFlowManager.cs
 using Unity.XR.CoreUtils;
 using UnityEngine;
 
@@ -7,6 +8,9 @@ public class VRFlowManager : MonoBehaviour
     public Transform xrOrigin; // XR Origin (NOT camera)
     public Transform cameraOffset; // Camera Offset (fallback if no XROrigin)
     public Transform spawnPoint;
+
+    [Tooltip("Combustion / explosives experiment area.")]
+    public Transform explosivesArea;
 
     [Tooltip("Where the XR camera moves for the qualitative / copper test station (e.g. child under QualitativeAnysis).")]
     public Transform qualitativeSpawnPoint;
@@ -29,6 +33,14 @@ public class VRFlowManager : MonoBehaviour
     public void StartQualitativeAnalysisExperiment()
     {
         TeleportToSpawn(qualitativeSpawnPoint);
+
+        if (menuCanvas != null)
+            menuCanvas.SetActive(false);
+    }
+
+    public void StartGotoExplosives()
+    {
+        TeleportToSpawn(explosivesArea);
 
         if (menuCanvas != null)
             menuCanvas.SetActive(false);

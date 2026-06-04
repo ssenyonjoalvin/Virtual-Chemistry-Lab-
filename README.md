@@ -1,4 +1,4 @@
-# Virtual-Chemistry-Lab-
+﻿# Virtual-Chemistry-Lab-
 ## Virtual Reality Science Practical System (VRSPS)
 
 **Virtual-Chemistry-Lab-** is a Unity-based Virtual Reality (VR) science practical platform designed to improve practical science learning in resource-limited schools. It provides immersive, interactive laboratory simulations aligned with the **Ugandan curriculum**, enabling learners to perform experiments safely, repeatedly, and with guided feedback.
@@ -182,23 +182,23 @@ The project follows a **modular Unity structure**:
 
 ```text
 Virtual-Chemistry-Lab-/
-├── Scenes/
-│   ├── Main laboratory scene
-│   └── Experiment-specific scenes (e.g., combustion simulation)
-├── Scripts/
-│   ├── Interaction logic (object handling, triggers)
-│   ├── Experiment workflows and step validation
-│   └── Safety feedback systems
-├── Prefabs/
-│   ├── Reusable lab equipment (Bunsen burner, test tubes, etc.)
-│   └── UI components and instructional elements
-├── Assets/
-│   ├── 3D models (lab environment, apparatus)
-│   ├── Materials, textures, and animations
-│   └── Sound effects (if included)
-└── XR Setup/
-    ├── XR Interaction Toolkit configurations
-    └── Controller mappings and input actions
+Γö£ΓöÇΓöÇ Scenes/
+Γöé   Γö£ΓöÇΓöÇ Main laboratory scene
+Γöé   ΓööΓöÇΓöÇ Experiment-specific scenes (e.g., combustion simulation)
+Γö£ΓöÇΓöÇ Scripts/
+Γöé   Γö£ΓöÇΓöÇ Interaction logic (object handling, triggers)
+Γöé   Γö£ΓöÇΓöÇ Experiment workflows and step validation
+Γöé   ΓööΓöÇΓöÇ Safety feedback systems
+Γö£ΓöÇΓöÇ Prefabs/
+Γöé   Γö£ΓöÇΓöÇ Reusable lab equipment (Bunsen burner, test tubes, etc.)
+Γöé   ΓööΓöÇΓöÇ UI components and instructional elements
+Γö£ΓöÇΓöÇ Assets/
+Γöé   Γö£ΓöÇΓöÇ 3D models (lab environment, apparatus)
+Γöé   Γö£ΓöÇΓöÇ Materials, textures, and animations
+Γöé   ΓööΓöÇΓöÇ Sound effects (if included)
+ΓööΓöÇΓöÇ XR Setup/
+    Γö£ΓöÇΓöÇ XR Interaction Toolkit configurations
+    ΓööΓöÇΓöÇ Controller mappings and input actions
 And many more...............................
 ```
 

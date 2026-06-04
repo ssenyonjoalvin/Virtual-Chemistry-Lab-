@@ -1,13 +1,22 @@
+//Assets/Scripts/VRFlowManager.cs
+using Unity.XR.CoreUtils;
 using UnityEngine;
 
 public class VRFlowManager : MonoBehaviour
 {
     [Header("References")]
     public Transform xrOrigin; // XR Origin (NOT camera)
-    public Transform cameraOffset; // Camera Offset
+    public Transform cameraOffset; // Camera Offset (fallback if no XROrigin)
     public Transform spawnPoint;
 
-      public Transform explosivesArea;
+    [Tooltip("Combustion / explosives experiment area.")]
+    public Transform explosivesArea;
+
+    [Tooltip("Where the XR camera moves for the qualitative / copper test station (e.g. child under QualitativeAnysis).")]
+    public Transform qualitativeSpawnPoint;
+
+    [Tooltip("If true, XR Origin yaw matches spawn point Y rotation after teleport.")]
+    public bool alignYawToSpawn = true;
 
     public GameObject menuCanvas;
 
@@ -15,36 +24,56 @@ public class VRFlowManager : MonoBehaviour
 
     public void StartTitrationExperiment()
     {
-        // 1. Teleport player
-        TeleportToLab();
+        TeleportToSpawn(spawnPoint);
 
-        // 2. Hide menu
-        menuCanvas.SetActive(false);
-
+        if (menuCanvas != null)
+            menuCanvas.SetActive(false);
     }
 
-     public void StartGotoExplosives()
+    public void StartQualitativeAnalysisExperiment()
     {
-        // 1. Teleport player to the explosives area
-        TeleportToExplosives();
+        TeleportToSpawn(qualitativeSpawnPoint);
 
-        // 2. Hide menu after teleporting
-        menuCanvas.SetActive(false);
-
+        if (menuCanvas != null)
+            menuCanvas.SetActive(false);
     }
 
-    void TeleportToLab()
+    public void StartGotoExplosives()
     {
-        // Move XR Origin so camera ends up at spawn point
+        TeleportToSpawn(explosivesArea);
+
+        if (menuCanvas != null)
+            menuCanvas.SetActive(false);
+    }
+
+    void TeleportToSpawn(Transform target)
+    {
+        if (target == null || xrOrigin == null)
+        {
+            Debug.LogWarning("VRFlowManager: spawn transform or xrOrigin is not assigned.", this);
+            return;
+        }
+
+        if (alignYawToSpawn)
+        {
+            var e = xrOrigin.eulerAngles;
+            xrOrigin.rotation = Quaternion.Euler(e.x, target.eulerAngles.y, e.z);
+        }
+
+        var xrOriginComponent = xrOrigin.GetComponent<XROrigin>();
+        if (xrOriginComponent != null)
+        {
+            xrOriginComponent.MoveCameraToWorldLocation(target.position);
+            return;
+        }
+
+        if (cameraOffset == null)
+        {
+            Debug.LogWarning("VRFlowManager: cameraOffset is not assigned and no XROrigin found.", this);
+            return;
+        }
+
         Vector3 offset = xrOrigin.position - cameraOffset.position;
-        xrOrigin.position = spawnPoint.position + offset;
+        xrOrigin.position = target.position + offset;
     }
-
-  void TeleportToExplosives()
-    {
-        // Move XR Origin so camera ends up at spawn point
-        Vector3 offset = xrOrigin.position - cameraOffset.position;
-        xrOrigin.position = explosivesArea.position + offset;
-    }
-
 }

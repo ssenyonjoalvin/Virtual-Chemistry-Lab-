@@ -12,13 +12,9 @@ public class PipettePour : MonoBehaviour
 
     private bool isPouring = false;
 
-    void Update()
-    {
-        if (isPouring && targetFlask != null)
-        {
-            targetFlask.AddLiquid(pourRate * Time.deltaTime);
-        }
-    }
+    // Removed Update() to avoid double-counting volume. 
+    // Particles now handle volume addition via OnParticleCollision in FlaskReaction.
+
 
     public void StartPouring()
     {

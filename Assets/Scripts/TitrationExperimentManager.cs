@@ -20,7 +20,7 @@ public class TitrationExperimentManager : MonoBehaviour
     public GameObject indicatorBottle;
     public GameObject dropper;
     public GameObject flask;
-    public GameObject button; // For starting the pour in Step 4
+    public GameObject Stopcock; // For starting the pour in Step 4
     public GameObject finishButton; // For starting the pour in Step 4
 
 
@@ -90,7 +90,7 @@ public class TitrationExperimentManager : MonoBehaviour
 
             case 4:
                 UpdateUI("Step 4: Press the button on the stand to start pouring");
-                Highlight(button); // Add button reference later if you want
+                Highlight(Stopcock); // Add button reference later if you want
                 break;
 
             case 5:
@@ -191,11 +191,11 @@ public class TitrationExperimentManager : MonoBehaviour
 
         if (obj != null)
         {
-            // ObjectHighlighter highlighter = obj.GetComponent<ObjectHighlighter>();
-            // if (highlighter != null)
-            // {
-            //     highlighter.EnableHighlight();
-            // }
+            ObjectHighlighter highlighter = obj.GetComponent<ObjectHighlighter>();
+            if (highlighter != null)
+            {
+                highlighter.EnableHighlight();
+            }
 
             if (arrow != null)
             {

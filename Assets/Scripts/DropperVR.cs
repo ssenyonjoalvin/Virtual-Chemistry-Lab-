@@ -103,4 +103,11 @@ public class DropperVR : MonoBehaviour
     {
         if(liquidRenderer != null) liquidRenderer.material.color = color;
     }
+
+    // 🔴 NEW: Add this to the bottom of DropperVR.cs
+    public void ResetDropper()
+    {
+        isFilled = false;
+        SetColor(Color.clear);
+    }
 }

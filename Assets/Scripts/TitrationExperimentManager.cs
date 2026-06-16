@@ -13,18 +13,18 @@ public class TitrationExperimentManager : MonoBehaviour
     [Header("UI")]
     public GameObject startPanel;
     public TextMeshProUGUI instructionText;
-    public TextMeshProUGUI worldSpaceMonitorText; // New reference
+    public TextMeshProUGUI volumeText; 
 
+    [Header("Experiment Values (Displayed to Student)")]
+    public string knownTitrantConcentration = "0.1 M NaOH";
+    public string knownAnalyteVolume = "25.0 mL HCl";
+    
     [Header("Objects")]
-
     public GameObject indicatorBottle;
     public GameObject dropper;
     public GameObject flask;
-    public GameObject Stopcock; // For starting the pour in Step 4
-    public GameObject finishButton; // For starting the pour in Step 4
-
-
-
+    public GameObject Stopcock; 
+    public GameObject finishButton; 
 
     [Header("Helpers")]
     public FloatingArrow arrow;
@@ -32,9 +32,7 @@ public class TitrationExperimentManager : MonoBehaviour
     [Header("Voice Guidance")]
     public AudioSource voiceSource;
     public bool playVoiceGuidance = true;
-    [Tooltip("Per-step clips assigned here take priority over Resources.")]
     public StepVoiceLine[] stepVoiceLines;
-    [Tooltip("If no clip is assigned for a step, load from Resources: {folder}/step_{stepNumber} (e.g. step_1).")]
     public bool loadNarrationFromResources = true;
     public string resourcesNarrationFolder = "TitrationNarration";
     [Range(0f, 1f)]
@@ -43,20 +41,39 @@ public class TitrationExperimentManager : MonoBehaviour
     private int currentStep = 0;
     private GameObject currentlyHighlightedObject;
 
+    private Vector3 dropperStartPos;
+    private Quaternion dropperStartRot;
+
+
+[Header("Scenario")]
+public GameObject scenarioPanel;
+public TextMeshProUGUI scenarioText;
+
+void Start()
+{
+    if (scenarioPanel != null)
+        scenarioPanel.SetActive(true);
+
+    if (startPanel != null)
+        startPanel.SetActive(false);
+
+    if (dropper != null)
+    {
+        dropperStartPos = dropper.transform.position;
+        dropperStartRot = dropper.transform.rotation;
+    }
+}
     void Awake()
     {
         EnsureVoiceSource();
     }
 
+
     void EnsureVoiceSource()
     {
-        if (voiceSource != null)
-            return;
-
+        if (voiceSource != null) return;
         voiceSource = GetComponent<AudioSource>();
-        if (voiceSource == null)
-            voiceSource = gameObject.AddComponent<AudioSource>();
-
+        if (voiceSource == null) voiceSource = gameObject.AddComponent<AudioSource>();
         voiceSource.playOnAwake = false;
         voiceSource.loop = false;
         voiceSource.spatialBlend = 0f;
@@ -69,6 +86,40 @@ public class TitrationExperimentManager : MonoBehaviour
         ShowStep();
     }
 
+    public void ResetExperiment()
+    {
+        currentStep = 0;
+
+        if (startPanel != null) startPanel.SetActive(true);
+        if (finishButton != null) finishButton.SetActive(false);
+        if (volumeText != null) volumeText.text = ""; 
+        
+        UpdateUI("Experiment Reset. Press Start to try again.");
+        RemoveHighlight();
+
+        if (dropper != null)
+        {
+            dropper.transform.position = dropperStartPos;
+            dropper.transform.rotation = dropperStartRot;
+            Rigidbody rb = dropper.GetComponent<Rigidbody>();
+            if (rb != null) { rb.linearVelocity = Vector3.zero; rb.angularVelocity = Vector3.zero; }
+            DropperVR dropScript = dropper.GetComponent<DropperVR>();
+            if (dropScript != null) dropScript.ResetDropper();
+        }
+
+        if (flask != null)
+        {
+            FlaskReaction flaskScript = flask.GetComponent<FlaskReaction>();
+            if (flaskScript != null) flaskScript.ResetFlask();
+        }
+
+        if (Stopcock != null)
+        {
+            PipettePour pourScript = Stopcock.GetComponent<PipettePour>();
+            if (pourScript != null) pourScript.StopPouring();
+        }
+    }
+
     void ShowStep()
     {
         switch (currentStep)
@@ -77,164 +128,120 @@ public class TitrationExperimentManager : MonoBehaviour
                 UpdateUI("Step 1: Pick up the dropper");
                 Highlight(dropper);
                 break;
-
             case 2:
                 UpdateUI("Step 2: Dip dropper into the indicator bottle to fill it");
                 Highlight(indicatorBottle);
                 break;
-
             case 3:
                 UpdateUI("Step 3: Move dropper over the flask and press Trigger to add it");
                 Highlight(flask);
                 break;
-
             case 4:
-                UpdateUI("Step 4: Press the button on the stand to start pouring");
-                Highlight(Stopcock); // Add button reference later if you want
+                UpdateUI("Step 4: Pinch and hold the stopcock to dispense liquid.");
+                Highlight(Stopcock);
                 break;
-
             case 5:
-                UpdateUI("Step 5: Pouring... Waiting for endpoint.");
+                UpdateUI("Step 5: Pouring... Wait for the endpoint (Pink Color).");
                 Highlight(flask);
                 break;
-
             default:
-                UpdateUI("Experiment Complete! Color Changed.");
-                RemoveHighlight();
                 break;
         }
-
         PlayVoiceForStep(currentStep);
     }
 
-    // --- UI HELPER METHODS ---
-    
-    void UpdateUI(string message) 
-    {
+    void UpdateUI(string currentTaskMessage) 
+    { 
         if (instructionText != null) 
-            instructionText.text = message;
+        {
+            string header =
+    $"<color=#55CCFF><b>Mission:</b></color>\n" +
+    $"Determine the concentration of the unknown HCl sample.\n" +
+    $"<color=#55CCFF><b>Lab Values:</b></color>\n" +
+    $"Titrant (Burette): <b>{knownTitrantConcentration}</b>\n" +
+    $"Analyte (Flask): <b>{knownAnalyteVolume}</b>";
+
+            string task = $"<color=#55CCFF><b>Current Task:</b>\n{currentTaskMessage}</color>";
+            
+            instructionText.text = header + task;
+        }
     }
 
-    public void DebugToVR(string debugMessage)
-    {
-        if (instructionText != null) 
-            instructionText.text += "\n<color=#00FF00>[DEBUG] " + debugMessage + "</color>";
+    public void DebugToVR(string debugMessage) 
+    { 
+        if (instructionText != null) instructionText.text += "\n<color=#00FF00>[DEBUG] " + debugMessage + "</color>"; 
     }
 
-    // NEW: Live Volume Monitor for debugging the color issue
     public void UpdateLiveVolumeMonitor(float current, float target, bool hasIndicator)
     {
         if (currentStep == 5 && instructionText != null)
         {
             string indicatorStatus = hasIndicator ? "<color=#00FF00>YES</color>" : "<color=#FF0000>NO</color>";
-            instructionText.text = $"Step 5: Pouring...\n" +
-                                   $"Flask Volume: {current:F1} / {target}\n" +
-                                   $"Has Indicator: {indicatorStatus}";
+            UpdateUI($"Step 5: Pouring...\nHas Indicator: {indicatorStatus}");
+            
+            if (volumeText != null) 
+                volumeText.text = "Flask Volume:\n" + current.ToString("F2") + " mL";
         }
     }
 
-    // --- STEP EVENTS ---
-
-    public void OnDropperGrabbed()
-    {
-        // DebugToVR("Dropper Grabbed!");
-        if (currentStep == 1) NextStep();
-    }
-
-    public void OnDropperFilled()
-    {
-        // DebugToVR("Dropper Filled!");
-        if (currentStep == 2) NextStep();
-    }
-
-    public void OnIndicatorAddedToFlask()
-    {
-        // DebugToVR("Indicator Added!");
-        if (currentStep == 3) NextStep();
-    }
-
-    public void OnPouringStarted()
-    {
-        // DebugToVR("Pouring Started!");
-        if (currentStep == 4) NextStep();
-    }
+    public void OnDropperGrabbed() { if (currentStep == 1) NextStep(); }
+    public void OnDropperFilled() { if (currentStep == 2) NextStep(); }
+    public void OnIndicatorAddedToFlask() { if (currentStep == 3) NextStep(); }
+    public void OnPouringStarted() { if (currentStep == 4) NextStep(); }
 
     public void OnEndpointReached(float result)
     {
-        // 1. Move the step to 6 so the Live Monitor stops running!
         currentStep = 6; 
-
-        // 2. Update the final UI text
-        UpdateUI("Experiment Complete!\nConcentration = " + result.ToString("F3") + " M");
         
-        // 3. Turn on the finish button
+        UpdateUI(
+    "<color=#00FF00>Analysis Complete</color>\n" +
+    "You have successfully determined the concentration of the unknown acid sample.\n" +
+    $"Calculated Concentration: <b>{result:F3} M</b>\n" +
+    "This value can now be used by the water treatment facility for quality control."
+);
+        
         if (finishButton != null) finishButton.SetActive(true);
-
-        // 4. Remove any remaining highlights
+        
         RemoveHighlight();
-
         PlayVoiceForStep(currentStep);
     }
 
-    private void NextStep()
-    {
-        currentStep++;
-        ShowStep();
+    // 🔴 MISSING CODE ADDED BACK HERE:
+    private void NextStep() 
+    { 
+        currentStep++; 
+        ShowStep(); 
     }
-
-    // --- HIGHLIGHT SYSTEM (Fully Activated) ---
 
     void Highlight(GameObject obj)
     {
         RemoveHighlight();
         currentlyHighlightedObject = obj;
-
         if (obj != null)
         {
             ObjectHighlighter highlighter = obj.GetComponent<ObjectHighlighter>();
-            if (highlighter != null)
-            {
-                highlighter.EnableHighlight();
-            }
-
-            if (arrow != null)
-            {
-                arrow.SetTarget(obj.transform);
-            }
+            if (highlighter != null) highlighter.EnableHighlight();
         }
     }
 
-    void RemoveHighlight()
-    {
-        // if (currentlyHighlightedObject != null)
-        // {
-        //     ObjectHighlighter highlighter = currentlyHighlightedObject.GetComponent<ObjectHighlighter>();
-        //     if (highlighter != null)
-        //     {
-        //         highlighter.DisableHighlight();
-        //     }
-        //     currentlyHighlightedObject = null;
-        // }
-
-        if (arrow != null)
+    void RemoveHighlight() 
+    { 
+        if (currentlyHighlightedObject != null)
         {
-            arrow.Hide();
+            ObjectHighlighter highlighter = currentlyHighlightedObject.GetComponent<ObjectHighlighter>();
+            if (highlighter != null) highlighter.DisableHighlight();
+            currentlyHighlightedObject = null;
         }
+        if (arrow != null) arrow.Hide(); 
     }
 
     void PlayVoiceForStep(int stepNumber)
     {
-        if (!playVoiceGuidance)
-            return;
-
+        if (!playVoiceGuidance) return;
         EnsureVoiceSource();
-        if (voiceSource == null)
-            return;
-
+        if (voiceSource == null) return;
         AudioClip clip = GetClipForStep(stepNumber);
-        if (clip == null)
-            return;
-
+        if (clip == null) return;
         voiceSource.Stop();
         voiceSource.volume = voiceVolume;
         voiceSource.clip = clip;
@@ -248,17 +255,24 @@ public class TitrationExperimentManager : MonoBehaviour
             for (int i = 0; i < stepVoiceLines.Length; i++)
             {
                 StepVoiceLine line = stepVoiceLines[i];
-                if (line != null && line.stepNumber == stepNumber && line.clip != null)
-                    return line.clip;
+                if (line != null && line.stepNumber == stepNumber && line.clip != null) return line.clip;
             }
         }
-
         if (loadNarrationFromResources && !string.IsNullOrEmpty(resourcesNarrationFolder))
         {
             string path = $"{resourcesNarrationFolder}/step_{stepNumber}";
             return Resources.Load<AudioClip>(path);
         }
-
         return null;
     }
+
+    public void ContinueFromScenario()
+{
+    if (scenarioPanel != null)
+        scenarioPanel.SetActive(false);
+
+PlayVoiceForStep(0);
+    if (startPanel != null)
+        startPanel.SetActive(true);
+}
 }

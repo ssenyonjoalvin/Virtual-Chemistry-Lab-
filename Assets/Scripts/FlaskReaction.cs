@@ -146,4 +146,21 @@ public class FlaskReaction : MonoBehaviour
         hasIndicator = true;
         SetColor(indicatorColor);
     }
+
+    // 🔴 NEW: Add this to the bottom of FlaskReaction.cs
+    public void ResetFlask()
+    {
+        currentVolume = 0f;
+        hasIndicator = false;
+        hasChangedColor = false;
+        
+        SetColor(initialColor);
+        
+        // Randomize the next test so it isn't the same answer!
+        // Generates an unknown concentration between 0.05 and 0.50 M
+        float secretConcentration = Random.Range(0.05f, 0.5f); 
+        endpointVolume = (secretConcentration * analyteVolume) / titrantConcentration;
+
+        Debug.Log("Flask Reset! New endpoint is: " + endpointVolume);
+    }
 }

@@ -161,7 +161,7 @@ void Start()
     $"Titrant (Burette): <b>{knownTitrantConcentration}</b>\n" +
     $"Analyte (Flask): <b>{knownAnalyteVolume}</b>";
 
-            string task = $"\n<color=#55CCFF><b>Current Task:</b>\n{currentTaskMessage}</color>";
+            string task = $"<color=#55CCFF><b>Current Task:</b>\n{currentTaskMessage}</color>";
             
             instructionText.text = header + task;
         }

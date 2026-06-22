@@ -329,9 +329,9 @@
             "actions": [
                 {
                     "name": "Position",
-                    "type": "Button",
+                    "type": "Value",
                     "id": "83a7af0b-87e3-42c3-a909-95fbf8091e4f",
-                    "expectedControlType": "",
+                    "expectedControlType": "Vector3",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -349,7 +349,7 @@
                     "name": "Is Tracked",
                     "type": "Button",
                     "id": "82eb6741-beef-48d3-83ab-a957dc1caa1e",
-                    "expectedControlType": "",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -449,15 +449,6 @@
                     "type": "Value",
                     "id": "c01850c4-700b-4ae6-a187-a894afef5bbd",
                     "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "Menu",
-                    "type": "Button",
-                    "id": "bc41d9f4-6fc7-47b3-9b5b-757500ca086c",
-                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -868,17 +859,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "Thumbstick",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "85d07ef7-61c7-4d6d-b79f-a4f0ec3ee468",
-                    "path": "<XRController>{LeftHand}/primaryButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Menu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

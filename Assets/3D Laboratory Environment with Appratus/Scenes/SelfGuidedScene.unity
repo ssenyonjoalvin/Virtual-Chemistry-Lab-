@@ -44352,7 +44352,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 100700f000e15acbda5118f6e0abafb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectDisplayName: Dase solution
+  objectDisplayName: Hydrochloric acid
   textHeightOffset: 0.22
   highlightColor: {r: 0.5999911, g: 0.9150943, b: 0.5999911, a: 1}
   pulseSpeed: 2

@@ -13,6 +13,7 @@ TagManager:
   - instructionPanel
   - instructionText
   - RightHand
+  - BaseSolutionSource
   layers:
   - Default
   - TransparentFX

@@ -1,111 +1,113 @@
 using UnityEngine;
+
 public class DropperVR : MonoBehaviour
 {
-[Header("References")]
-public Transform tip;
-public Renderer liquidRenderer;
-[Header("Settings")]
-public Color filledColor = Color.blue;
+    [Header("References")]
+    public Transform tip;
+    public Renderer liquidRenderer;
 
-private bool isFilled = false;
-public TitrationExperimentManager experimentManager;
-private FlaskReaction currentFlask = null; 
+    [Header("Settings")]
+    public Color filledColor = Color.blue;
 
-void Start()
-{
-    SetColor(Color.clear);
-}
+    private bool isFilled = false;
+    public TitrationExperimentManager experimentManager;
+    private FlaskReaction currentFlask = null; 
 
-void OnTriggerEnter(Collider other)
-{
-    if (other.CompareTag("IndicatorLiquid") && !isFilled)
+    void Start()
     {
-        FillDropper();
+        SetColor(Color.clear);
     }
 
-    if (other.CompareTag("BaseSolution"))
+    void OnTriggerEnter(Collider other)
     {
-        // FIXED: Now it searches the object AND its parents for the script!
-        currentFlask = other.GetComponentInParent<FlaskReaction>();
-        
-        // if (currentFlask != null)
-        // {
-        //     if (experimentManager != null) 
-        //         experimentManager.DebugToVR("Dropper is inside the flask!");
-        // }
-        // else
-        // {
-        //     if (experimentManager != null) 
-        //         experimentManager.DebugToVR("ERROR: Found the trigger, but couldn't find the FlaskReaction script!");
-        // }
+        if (other.CompareTag("IndicatorLiquid") && !isFilled)
+        {
+            FillDropper();
+        }
+
+        if (other.CompareTag("BaseSolution"))
+        {
+            // FIXED: Now it searches the object AND its parents for the script!
+            currentFlask = other.GetComponentInParent<FlaskReaction>();
+            
+            // if (currentFlask != null)
+            // {
+            //     if (experimentManager != null) 
+            //         experimentManager.DebugToVR("Dropper is inside the flask!");
+            // }
+            // else
+            // {
+            //     if (experimentManager != null) 
+            //         experimentManager.DebugToVR("ERROR: Found the trigger, but couldn't find the FlaskReaction script!");
+            // }
+        }
     }
-}
 
-void OnTriggerExit(Collider other)
-{
-    if (other.CompareTag("BaseSolution"))
+    void OnTriggerExit(Collider other)
     {
-        currentFlask = null;
-        // if (experimentManager != null) 
-        //     experimentManager.DebugToVR("Dropper left the flask.");
+        if (other.CompareTag("BaseSolution"))
+        {
+            currentFlask = null;
+            // if (experimentManager != null) 
+            //     experimentManager.DebugToVR("Dropper left the flask.");
+        }
     }
-}
 
-// 🔴 THIS IS THE TRIGGER BUTTON METHOD
-public void SqueezeDropper() 
-{
-    // 1. Did the button press actually register?
-    // if (experimentManager != null) experimentManager.DebugToVR("Trigger Button Pressed!");
-
-    if (isFilled) 
+    // 🔴 THIS IS THE TRIGGER BUTTON METHOD
+    public void SqueezeDropper() 
     {
+        // 1. Did the button press actually register?
+        // if (experimentManager != null) experimentManager.DebugToVR("Trigger Button Pressed!");
+
+        if (isFilled) 
+        {
+            if (currentFlask != null)
+            {
+                ReleaseDrop(); // Success!
+            }
+            else
+            {
+                // 2. Button worked, it's full, but it can't find the flask!
+                // if (experimentManager != null) experimentManager.DebugToVR("FAILED: Squeezed, but not touching flask.");
+            }
+        }
+        else 
+        {
+            // 3. Button worked, but the dropper is empty!
+            // if (experimentManager != null) experimentManager.DebugToVR("FAILED: Squeezed, but dropper is empty.");
+        }
+    }
+
+    void FillDropper()
+    {
+        isFilled = true;
+        SetColor(filledColor);
+
+        if (experimentManager != null)
+            experimentManager.OnDropperFilled();
+    }
+
+    void ReleaseDrop()
+    {
+        isFilled = false;
+        SetColor(Color.clear);
+
         if (currentFlask != null)
         {
-            ReleaseDrop(); // Success!
-        }
-        else
-        {
-            // 2. Button worked, it's full, but it can't find the flask!
-            // if (experimentManager != null) experimentManager.DebugToVR("FAILED: Squeezed, but not touching flask.");
+            currentFlask.AddIndicator();
+            if (experimentManager != null) experimentManager.OnIndicatorAddedToFlask();
         }
     }
-    else 
+
+    void SetColor(Color color)
     {
-        // 3. Button worked, but the dropper is empty!
-        // if (experimentManager != null) experimentManager.DebugToVR("FAILED: Squeezed, but dropper is empty.");
+        if(liquidRenderer != null) liquidRenderer.material.color = color;
     }
-}
 
-void FillDropper()
-{
-    isFilled = true;
-    SetColor(filledColor);
-
-    if (experimentManager != null)
-        experimentManager.OnDropperFilled();
-}
-
-void ReleaseDrop()
-{
-    isFilled = false;
-    SetColor(Color.clear);
-
-    if (currentFlask != null)
+    // 🔴 NEW: Add this to the bottom of DropperVR.cs
+    public void ResetDropper()
     {
-        currentFlask.AddIndicator();
-        if (experimentManager != null) experimentManager.OnIndicatorAddedToFlask();
+        isFilled = false;
+        SetColor(Color.clear);
     }
-}
-
-void SetColor(Color color)
-{
-    if(liquidRenderer != null) liquidRenderer.material.color = color;
-}
-
-// 🔴 NEW: Add this to the bottom of DropperVR.cs
-public void ResetDropper()
-{
-    isFilled = false;
-    SetColor(Color.clear);
-}
 }

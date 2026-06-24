@@ -90,7 +90,7 @@ void Start()
     {
         currentStep = 0;
 
-        if (startPanel != null) startPanel.SetActive(true);
+        // if (startPanel != null) startPanel.SetActive(true);
         if (finishButton != null) finishButton.SetActive(false);
         if (volumeText != null) volumeText.text = ""; 
         
@@ -155,13 +155,13 @@ void Start()
         if (instructionText != null) 
         {
             string header =
-    $"<color=#55CCFF><b>Mission:</b></color>\n" +
+    $"<color=#000000><b><u>Mission:</u></b></color>\n" +
     $"Determine the concentration of the unknown HCl sample.\n" +
-    $"<color=#55CCFF><b>Lab Values:</b></color>\n" +
+    $"<color=#000000><b><u>Lab Values:</u></b></color>\n" +
     $"Titrant (Burette): <b>{knownTitrantConcentration}</b>\n" +
     $"Analyte (Flask): <b>{knownAnalyteVolume}</b>";
 
-            string task = $"\n<color=#55CCFF><b>Current Task:</b>\n{currentTaskMessage}</color>";
+            string task = $"\n<color=#000000><b><u>Current Task:</u></b>\n{currentTaskMessage}</color>";
             
             instructionText.text = header + task;
         }
@@ -267,12 +267,27 @@ void Start()
     }
 
     public void ContinueFromScenario()
-{
-    if (scenarioPanel != null)
-        scenarioPanel.SetActive(false);
+    {
+        if (scenarioPanel != null)
+        {
+            scenarioPanel.SetActive(false);
+        }
 
-PlayVoiceForStep(0);
-    if (startPanel != null)
-        startPanel.SetActive(true);
-}
+        if (instructionText != null)
+        {
+            instructionText.text = @"You are a quality control technician working at a water treatment plant.
+A sample of hydrochloric acid has been received without a concentration label.
+Your supervisor has asked you to determine its concentration before it can be used in production.
+To solve this problem, perform an acid-base titration using a standard sodium hydroxide solution.
+Objective:
+Determine the concentration of the unknown hydrochloric acid sample.";
+        }
+
+        PlayVoiceForStep(0);
+
+        if (startPanel != null)
+        {
+            startPanel.SetActive(true);
+        }
+    }
 }

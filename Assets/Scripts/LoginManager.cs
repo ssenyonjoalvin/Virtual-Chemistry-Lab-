@@ -40,6 +40,8 @@ public class LoginManager : MonoBehaviour
     IEnumerator LoginRoutine(string email, string password)
     {
         string url = "https://vrspsweb.vercel.app/api/unity/auth/login";
+
+
         
         // Using a simple JSON format
         string jsonData = "{\"email\":\"" + email + "\", \"password\":\"" + password + "\", \"apiKey\":\"vrsps_unity_api_keys_2026\"}";
@@ -74,6 +76,7 @@ public class LoginManager : MonoBehaviour
 
                 // Save to global data
                 UserData.instance.userName = response.student.name;
+                UserData.instance.studentId = response.student.id;
                 UserData.instance.accessToken = response.accessToken;
                 UserData.instance.isLoggedIn = true;
 
